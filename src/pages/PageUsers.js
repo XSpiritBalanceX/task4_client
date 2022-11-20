@@ -22,7 +22,7 @@ const PageUsers =observer(()=>{
     const handleClose = () => setShow(false);
 
     useEffect(()=>{
-      fetch('http://localhost:5000/api/table')
+      fetch('https://task4server-production.up.railway.app/api/table')
       .then(res=>res.json())
       .then(data=>{setLoad(true); setDataUser(data)})      
     },[]);
@@ -58,11 +58,12 @@ const PageUsers =observer(()=>{
         }    
       }
       setDataUser(newData);    
-      fetch('http://localhost:5000/api/table/delete/',{method:'PUT',
+      fetch('https://task4server-production.up.railway.app/api/table/delete/',{method:'PUT',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
-        }, body:JSON.stringify({data:arrUserDel})})
+        }, 
+        body:JSON.stringify({data:arrUserDel})})
       .then(response=>response.json())
       .then(data=>{setModal(data.message); setShow(true)});
       
@@ -77,7 +78,7 @@ const PageUsers =observer(()=>{
           if(selectAllUsers[k]===true){
             localStorage.setItem(`blocked ${k}` , k);
           }
-          if(k==activUser.id){
+          if(k===activUser.id){
             user.setIsAuth(false);        
             navigate('/login');
           }
@@ -88,7 +89,7 @@ const PageUsers =observer(()=>{
         if(hashUser[k]===true){
           localStorage.setItem(`blocked ${k}` , k);
         }
-        if(k==activUser.id){
+        if(k===activUser.id){
           user.setIsAuth(false);        
           navigate('/login');
         }
