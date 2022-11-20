@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext} from 'react';
 import {BrowserRouter} from 'react-router-dom';
 import PageLinks from './pages/PageLinks';
 import PageRouter from './pages/PageRouter';
@@ -7,10 +7,8 @@ import {Context} from './index';
 
 const App=observer(()=> {
   const {user}=useContext(Context);
-
-  useEffect(()=>{
-    console.log(user.isAuth)
-  },[user.isAuth===true])
+   console.log(user.isAuth)
+  
 
   return (
     <div>
