@@ -116,7 +116,8 @@ const PageUsers =observer(()=>{
         info={el} 
         checkedInput={checked}
         selectUserNow={selectUser}
-        valueAllCheck={hashUser}        
+        valueAllCheck={hashUser}
+        checkUsNow={checUsNow}        
         blocked={el.id===parseInt(localStorage.getItem(`blocked ${el.id}`))}/>
     }).sort((a,b)=>a.key-b.key):null;
     

@@ -20,7 +20,7 @@ const Users=(props)=>{
         <td>{props.info.email}</td>
         <td>{props.info.data_reg}</td>
         <td>{props.info.data_log}</td>
-        <td>{props.activuser==props.info.id?'Active':props.blocked?'Blocked':'Inactive'}</td>
+        <td>{props.activuser===props.info.id?'Active':props.blocked?'Blocked':'Inactive'}</td>
     </tr>
    )
 }

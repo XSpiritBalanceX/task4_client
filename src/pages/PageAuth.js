@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useContext, useEffect} from "react";
+import { useState, useContext} from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {Button, Modal, Form, Container, Card} from 'react-bootstrap'
 import { login, registration } from "../http/userAPI";
