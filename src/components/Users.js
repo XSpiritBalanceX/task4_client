@@ -6,7 +6,7 @@ const Users=(props)=>{
 
     useEffect(()=>{
       setckeckInput(props.check)
-    })
+    },[props.check])
     const processAction=(event)=>{
         setckeckInput(event.target.checked)
         props.selectUserNow(event.target.id, event.target.checked);
