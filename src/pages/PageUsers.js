@@ -49,8 +49,12 @@ const PageUsers =observer(()=>{
       let arrUserDel=[];
       for(let k in deleteUs){
         if(deleteUs[k]===true){
-          console.log(k)
-          newData.forEach((el, ind)=>{if(el.id===parseInt(k)){
+          newData.forEach((el, ind)=>{
+            if(el.id===parseInt(k)){
+              if(el.id===activUser.id){
+                user.setIsAuth(false);
+                navigate('/registration');
+              }
             newData.splice(ind,1)
             arrUserDel.push(el.id)
           }})
@@ -89,7 +93,6 @@ const PageUsers =observer(()=>{
         if(hashUser[k]===true){
           localStorage.setItem(`blocked ${k}` , k);
         }
-        console.log(typeof activUser.id + '  '+ activUser.id)
         if(parseInt(k)===activUser.id){
           user.setIsAuth(false);        
           navigate('/login');
