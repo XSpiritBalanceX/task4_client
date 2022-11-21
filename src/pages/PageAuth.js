@@ -31,7 +31,7 @@ const PageAuth =observer(()=>{
   const click=async()=>{
     try{
       let data;
-      if(isLogin){
+      if(isLogin){        
       data=await login(form.email, form.password);
       let blockUser=decoded(data.token);
       if(blockUser.id===parseInt(localStorage.getItem(`blocked ${blockUser.id}`))){

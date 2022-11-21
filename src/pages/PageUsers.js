@@ -38,7 +38,7 @@ const PageUsers =observer(()=>{
     }
 
     const activUser=decoded(localStorage.getItem('token'));
-
+   console.log(`${parseInt(userSel)===activUser.id}   activuser`)
     const deleteUser=()=>{
       let deleteUs=null;
       let newData=[...dataUser];      
@@ -67,18 +67,19 @@ const PageUsers =observer(()=>{
       .then(response=>response.json())
       .then(data=>{setModal(data.message); setShow(true)});
       
-      if(userSel===activUser.id){
+      if(parseInt(userSel)===activUser.id){
         user.setIsAuth(false);
         navigate('/registration');
       }
     }
 
-    const blockUser=()=>{if(checked){
+    const blockUser=()=>{
+      if(checked){
         for(let k in selectAllUsers){
           if(selectAllUsers[k]===true){
             localStorage.setItem(`blocked ${k}` , k);
-          }
-          if(k===activUser.id){
+          }          
+          if(parseInt(k)===activUser.id){
             user.setIsAuth(false);        
             navigate('/login');
           }
@@ -89,7 +90,8 @@ const PageUsers =observer(()=>{
         if(hashUser[k]===true){
           localStorage.setItem(`blocked ${k}` , k);
         }
-        if(k===activUser.id){
+        console.log(typeof activUser.id + '  '+ activUser.id)
+        if(parseInt(k)===activUser.id){
           user.setIsAuth(false);        
           navigate('/login');
         }
