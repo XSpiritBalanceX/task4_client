@@ -85,6 +85,7 @@ const PageUsers =observer(()=>{
              if(el.id===activUser.id && el.check){
               user.setIsAuth(false);        
               navigate('/login');
+              localStorage.setItem('token' , null);
              }
              return ({...el, check:false})
           })); 
