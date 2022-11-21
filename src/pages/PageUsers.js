@@ -38,7 +38,6 @@ const PageUsers =observer(()=>{
     }
 
     const activUser=decoded(localStorage.getItem('token'));
-   console.log(`${parseInt(userSel)===activUser.id}   activuser`)
     const deleteUser=()=>{
       let deleteUs=null;
       let newData=[...dataUser];      
