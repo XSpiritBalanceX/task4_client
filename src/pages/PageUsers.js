@@ -53,6 +53,7 @@ const PageUsers =observer(()=>{
             if(el.id===parseInt(k)){
               if(el.id===activUser.id){
                 user.setIsAuth(false);
+                localStorage.setItem('token' , null);
                 navigate('/registration');
               }
             newData.splice(ind,1)
@@ -72,6 +73,7 @@ const PageUsers =observer(()=>{
       
       if(parseInt(userSel)===activUser.id){
         user.setIsAuth(false);
+        localStorage.setItem('token' , null);
         navigate('/registration');
       }
     }
