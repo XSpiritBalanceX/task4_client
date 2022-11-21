@@ -1,19 +1,20 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 
 const Users=(props)=>{ 
-    const  [chech, setChecked]=useState(props.valueAllCheck);
-    
+    const [ckeckInput, setckeckInput]=useState(props.check);
+
+    useEffect(()=>{
+      setckeckInput(props.check)
+    })
     const processAction=(event)=>{
-          
-          chech[event.target.id]=event.target.checked     
-           setChecked(chech);
-           props.selectUserNow(event.target.id, event.target.checked);
+        setckeckInput(event.target.checked)
+        props.selectUserNow(event.target.id, event.target.checked);
     }
 
    return(
     <tr>
-        <td><input type={'checkbox'} id={props.info.id}  checked={props.checkedInput?true:chech[props.info.id]||false}  
+        <td><input type={'checkbox'} id={props.info.id}  checked={ckeckInput}  
            onChange={(event)=>{processAction(event)}}/></td>
         <td>{props.info.id}</td>
         <td>{props.info.name}</td>

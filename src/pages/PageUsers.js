@@ -1,5 +1,5 @@
 import React, { useState , useEffect, useContext}from "react";
-import {Button,ButtonGroup,Table,ToggleButton, Modal } from 'react-bootstrap';
+import {Button,ButtonGroup,Table, Modal } from 'react-bootstrap';
 import Users from '../components/Users';
 import decoded from 'jwt-decode';
 import {useNavigate} from 'react-router-dom';
@@ -14,105 +14,89 @@ const PageUsers =observer(()=>{
     const [checked, setChecked]= useState(false);
     const [dataUser, setDataUser]=useState([]);
     const [isLoad, setLoad]=useState(false);
-    const [userSel, setUserSelect]=useState(null);
     const navigate=useNavigate();
     const [show, setShow] = useState(false);
     const [modalInfo, setModal]=useState('');
-    const [checUsNow, setChecUsNow]=useState(false);
     const handleClose = () => setShow(false);
 
     useEffect(()=>{
       fetch('https://task4server-production.up.railway.app/api/table')
       .then(res=>res.json())
-      .then(data=>{setLoad(true); setDataUser(data)})      
+      .then(data=>{setLoad(true); transformData(data)})      
     },[]);
 
-    const [hashUser, setHashUser]=useState({});
-    const selectAllUsers={};
+    const transformData=(data)=>{
+        data.forEach(el=>{
+          el.check=false
+        })
+        setDataUser(data);
+    }
     
+    
+    const selectAllUsers={};
+
     const selectUser=(userId, chec)=>{ 
-      hashUser[userId]=chec;
-      setHashUser(hashUser);
-      setUserSelect(userId) ;
-      setChecUsNow(chec); 
+      setDataUser(prevState=>
+        prevState.map(el=>
+          el.id === parseInt(userId) 
+          ? { ...el, check: chec }
+          : el)); 
     }
 
     const activUser=decoded(localStorage.getItem('token'));
-    const deleteUser=()=>{
-      let deleteUs=null;
-      let newData=[...dataUser];      
-      if(checked){
-        deleteUs=selectAllUsers;        
-      }else{
-        deleteUs=hashUser;        
+
+    const deleteUser=()=>{ 
+     let arrDeleteUser=[]
+     let newData=[...dataUser];
+     newData.forEach((el, ind)=>{
+      if(el.check){
+        arrDeleteUser.push(el.id);
+        if(el.id===activUser.id){
+          user.setIsAuth(false);
+          localStorage.setItem('token' , null);
+          navigate('/login');
+        }
+        newData.splice(ind,1)
       }
-      let arrUserDel=[];
-      for(let k in deleteUs){
-        if(deleteUs[k]===true){
-          newData.forEach((el, ind)=>{
-            if(el.id===parseInt(k)){
-              if(el.id===activUser.id){
-                user.setIsAuth(false);
-                localStorage.setItem('token' , null);
-                navigate('/registration');
-              }
-            newData.splice(ind,1)
-            arrUserDel.push(el.id)
-          }})
-        }    
-      }
-      setDataUser(newData);    
-      fetch('https://task4server-production.up.railway.app/api/table/delete/',{method:'PUT',
+     }) 
+     setDataUser(newData);
+     fetch('https://task4server-production.up.railway.app/api/table/delete/',{method:'PUT',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
         }, 
-        body:JSON.stringify({data:arrUserDel})})
+        body:JSON.stringify({data:arrDeleteUser})})
       .then(response=>response.json())
       .then(data=>{setModal(data.message); setShow(true)});
-      
-      if(parseInt(userSel)===activUser.id){
-        user.setIsAuth(false);
-        localStorage.setItem('token' , null);
-        navigate('/registration');
-      }
+    }
+
+    const selectedAllUsersOnButton=(bool)=>{
+      setChecked(!bool);
+      setDataUser(prevState=>prevState.map(el=>{
+        return ({...el, check:!bool})
+     })); 
     }
 
     const blockUser=()=>{
-      if(checked){
-        for(let k in selectAllUsers){
-          if(selectAllUsers[k]===true){
-            localStorage.setItem(`blocked ${k}` , k);
-          }          
-          if(parseInt(k)===activUser.id){
-            user.setIsAuth(false);        
-            navigate('/login');
-          }
-          selectAllUsers[k]=false
-        }
-      }else{
-        for(let k in hashUser){
-        if(hashUser[k]===true){
-          localStorage.setItem(`blocked ${k}` , k);
-        }
-        if(parseInt(k)===activUser.id){
-          user.setIsAuth(false);        
-          navigate('/login');
-        }
-        hashUser[k]=false
-      }
-      }
-      setChecUsNow(false);  
+         setDataUser(prevState=>prevState.map(el=>{
+             if(el.check ){              
+              localStorage.setItem(`blocked ${el.id}` , el.id);
+             }
+             if(el.id===activUser.id && el.check){
+              user.setIsAuth(false);        
+              navigate('/login');
+             }
+             return ({...el, check:false})
+          })); 
     }
 
     const ublockUser=()=>{
-      for(let k in hashUser){
-        if(hashUser[k]===true){
-          localStorage.removeItem(`blocked ${k}`);
+      setDataUser(prevState=>prevState.map(el=>{
+        if(el.check ){              
+         localStorage.removeItem(`blocked ${el.id}` , el.id);
         }
-        hashUser[k]=false
-      }
-      setChecUsNow(false);
+        return ({...el, check:false})
+     }));
     }
     
     let users=isLoad?dataUser.map(el=>{
@@ -122,8 +106,7 @@ const PageUsers =observer(()=>{
         info={el} 
         checkedInput={checked}
         selectUserNow={selectUser}
-        valueAllCheck={hashUser}
-        checkUsNow={checUsNow}        
+        check={el.check}       
         blocked={el.id===parseInt(localStorage.getItem(`blocked ${el.id}`))}/>
     }).sort((a,b)=>a.key-b.key):null;
     
@@ -138,13 +121,12 @@ const PageUsers =observer(()=>{
         <Table striped>
       <thead>
         <tr>
-          <th><ToggleButton
+          <th><Button
           id="toggle-check"
           type="checkbox"
           variant="secondary"
-          checked={checked}
-          onChange={(e) => setChecked(e.currentTarget.checked)}
-        >{!checked?'Select All':'Deselect'}</ToggleButton></th>
+          onClick={() => selectedAllUsersOnButton(checked)}
+        >{!checked?'Select All':'Deselect'}</Button></th>
           <th>id</th>
           <th>Name</th>
           <th>Email</th>
